@@ -43,7 +43,7 @@ int main(){
 		//킹이 다음에 이동할 곳이 돌이 있는 곳이라면
 		int nextDolY = dolY, nextDolX = dolX;
 		if(nextKingY == dolY && nextKingX == dolX){
-			nextDolY += dy[queue[i]], nextDolX += dy[queue[i]];
+			nextDolY += dy[queue[i]], nextDolX += dx[queue[i]];
 		}
 		//둘 중 하나라도 범위 밖으로 넘어가면 띵가 넘어간다.
 		if(!(isOut(nextDolY, nextDolX) || isOut(nextKingY, nextKingX))){
