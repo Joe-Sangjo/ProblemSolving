@@ -13,9 +13,6 @@ int a, b, n ,m;
 int dy[4] = {1 , 0, -1, 0};
 int dx[4] = {0, -1, 0, 1};
 char dir[4] = { 'N', 'W', 'S', 'E'};
-
-
-
 int robotX[101];
 int robotY[101];
 //로봇 방향 N E W S
@@ -23,7 +20,7 @@ int robotDirection[101];
 
 //out되면 true
 bool isOut(int index){
-	return robotY[index] > b || robotX[index] > a || robotY[index] < 0 || robotX[index] < 0;
+	return robotY[index] > b || robotX[index] > a || robotY[index] <= 0 || robotX[index] <= 0;
 }
 
 //회전 명령 L은 시계 반대방향 R은 시계방향
@@ -36,9 +33,9 @@ void Rotation(int index, char order, int num){
 		robotDirection[index] %= 4; 
 	}
 	//오른쪽 : 숫자가 작아진다.
-	else{
+	else if(order == 'R'){
 		robotDirection[index] -= num;
-		robotDirection[index] += 1000;
+		robotDirection[index] += 10000;
 		robotDirection[index] %= 4;
 	}
 }
@@ -62,7 +59,6 @@ int Crash(int index){
 }
 
 int main(){
-	freopen("input.txt","r",stdin);
 
 	cin>>a>>b>>n>>m;
 
@@ -76,7 +72,6 @@ int main(){
 				break;
 			}			
 		}
-
 	}	
 
 	for(int i = 0; i < m; i++){
