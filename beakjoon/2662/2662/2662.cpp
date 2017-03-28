@@ -84,12 +84,7 @@ int main() {
 
 	cout << ret << endl;
 
-	 /*for(int i = 0; i < companyNum; i++){
-	 	for(int j = 0; j <= totalMoney; j++){
-	 		cout<<dp[i][j]<<" ";
-	 	}
-	 	cout<<endl;
-	 }*/
+
 	reconstruction(0, totalMoney);
 
 	 for(int i = 0; i < record.size(); i++){
