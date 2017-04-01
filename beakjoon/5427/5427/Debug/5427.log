@@ -1,0 +1,5 @@
+﻿  5427.cpp
+c:\users\sangjo\documents\problemsolving\beakjoon\5427\5427\5427.cpp(22): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\sangjo\documents\problemsolving\beakjoon\5427\5427\5427.cpp(65): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  5427.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\5427\Debug\5427.exe
+  5427.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\5427\Debug\5427.pdb (Partial PDB)
