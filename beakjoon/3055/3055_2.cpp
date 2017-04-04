@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cstdio>
 #include <queue>
 #include <vector>
 #include <cstring>
@@ -20,7 +19,6 @@ bool isIn(int y, int x){
 	return y >= 0 && y < r && x >= 0 && x < c;	
 }
 int main(){
-	freopen("input.txt","r",stdin);
 	cin>>r>>c;
 	map = vector<string>(r);
 
@@ -57,7 +55,6 @@ int main(){
 		int hereY = q.front().second.first;
 		int hereX = q.front().second.second;
 
-		// cout<<what<<"  "<<hereY<<" "<<hereX<<" " << q.endl;
 		q.pop();
 
 		//끝남 목적지에 도착
@@ -98,22 +95,5 @@ int main(){
 	else{
 		cout<<Sdist[Dy][Dx]<<endl;
 	}
-
-
-	// for(int i = 0; i < r; i++){
-	// 	for(int j = 0; j < c; j++){
-	// 		cout<<Sdist[i][j]<<" ";
-	// 	}
-	// 	cout<<endl;
-	// }
-	// cout<<endl<<endl;
-
-	// for(int i = 0; i < r; i++){
-	// 	for(int j = 0; j < c; j++){
-	// 		cout<<Wdist[i][j]<<" ";
-	// 	}
-	// 	cout<<endl;
-	// }
-	// cout<<endl<<endl;
 	return 0;
 }
