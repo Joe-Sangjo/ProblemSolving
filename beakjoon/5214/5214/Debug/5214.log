@@ -1,0 +1,3 @@
+﻿  output.cpp
+output.obj : error LNK2005: _main이(가) 5214.obj에 이미 정의되어 있습니다.
+C:\Git\ProblemSolving\beakjoon\5214\Debug\5214.exe : fatal error LNK1169: 여러 번 정의된 기호가 있습니다.
