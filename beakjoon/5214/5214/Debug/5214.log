@@ -1,3 +1,5 @@
-﻿  output.cpp
-output.obj : error LNK2005: _main이(가) 5214.obj에 이미 정의되어 있습니다.
-C:\Git\ProblemSolving\beakjoon\5214\Debug\5214.exe : fatal error LNK1169: 여러 번 정의된 기호가 있습니다.
+﻿  5214.cpp
+c:\users\sangjo\documents\problemsolving\beakjoon\5214\5214\5214.cpp(33): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\sangjo\documents\problemsolving\beakjoon\5214\5214\5214.cpp(58): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  5214.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\5214\Debug\5214.exe
+  5214.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\5214\Debug\5214.pdb (Partial PDB)

@@ -17,12 +17,11 @@ bool isIn(int h, int y, int x) {
 }
 
 //동서남북상하
-int dh[6] = { 0,0,0,0,1, -1 };
-int dy[6] = { 1,-1,0,0,0,0 };
-int dx[6] = { 0,0,1,-1,0,0 };
+int dh[6] = {0,0,0,0,1, -1};
+int dy[6] = {1,-1,0,0,0,0};
+int dx[6] = {0,0,1,-1,0,0};
 int main() {
 	freopen("input.txt", "r", stdin);
-
 	while (cin >> L >> R >> C) {
 		if (L == 0 && R == 0 && C == 0) break;
 		int h, y, x; int endH, endY, endX;
@@ -45,7 +44,7 @@ int main() {
 		//cout << endl;
 
 		//cost, 점
-		priority_queue<pair<int, pair<int, pair<int, int> > > > pq;
+		priority_queue<pair<int, pair<int, pair<int,int> > > > pq;
 		memset(dist, 0x3f3f3f3f, sizeof(dist));
 
 		pq.push(mp(0, mp(h, mp(y, x))));
@@ -59,7 +58,6 @@ int main() {
 
 
 			pq.pop();
-
 
 			if (cost > dist[hereH][hereY][hereX]) continue;
 
@@ -82,7 +80,6 @@ int main() {
 		}
 		else
 			cout << "Escaped in " << ret << " minute(s)." << endl;
-
 	}
 
 	return 0;

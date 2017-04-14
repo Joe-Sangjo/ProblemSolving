@@ -1,72 +1,75 @@
 #include <iostream>
 #include <cstdio>
-#include <vector>
 #include <queue>
+#include <vector>
+#include <cmath>
+#include <algorithm>
+#include <cstring>
+#define mp make_pair
 using namespace std;
 
-int n, k, m;
-
-//adj[n][i].first는 n과 연결되는 도시,
-//adj[n][i].second는 n과 연결하는 도시가 사용하는 하이퍼루프 호선
-vector<vector<pair<int, int> > > adj;
-
-
+//정거장, 하이퍼루프
+int dist[100001];
 int main() {
 	freopen("input.txt", "r", stdin);
+
+	int N, K, M;
+
+	cin >> N >> K >> M;
+
+	//cout << N << K << M;
+
+	//first는 역번호 , second는 루프번호
+	vector<vector<pair<int, int> > > adj = vector<vector<pair<int, int> > >(N);
+
+	for (int i = 0; i < M; i++) {
+		vector<int> temp;
+		for (int j = 0; j < K; j++) {
+			int t; cin >> t;
+			temp.push_back(t - 1);
+			//cout << t << " ";
+		}
+		//cout << endl;
+		for (int j = 0; j < temp.size() - 1; j++) {
+			int from = temp[j], to = temp[j + 1];
+			adj[from].push_back(mp(to, i));
+			adj[to].push_back(mp(from, i));
+		}
+	}
+
+
+
+	 priority_queue<pair<int ,pair<int, int> > > q;
+	 memset(dist, -1, sizeof(dist));
+
+	 //1001번 정거장은 가상
+	 dist[0] = 0;
+	 q.push(mp(0, mp(0, 1001)));
 	
-	cin >> n >> k >> m;
-	
-	adj = vector<vector<pair<int, int > > >(n+ 10);
+	 while (!q.empty()) {
+		 int here = q.top().second.first;
+		 int hereLineNum = q.top().second.second;
 
-	for (int i = 0; i < m; i++) {
-		vector<int> link;
-		for (int j = 0; j < k; j++) {
-			int temp; cin >> temp;
-			link.push_back(temp);
-		}
-		if (k == 1) continue;
-		for (int j = 0; j < link.size() - 1; j++) {
-			int from = link[j], to = link[j + 1];
+		 int hereDist = -q.top().first;
+		 q.pop();
 
-			adj[from].push_back(make_pair(to, i));
-			adj[to].push_back(make_pair(from, i));
-		}
-	}
+		 if (hereDist > dist[here]) continue;
 
-	vector<int> dist(n + 10, 0x3f3f3f3f);
+		 for (int i = 0; i < adj[here].size(); i++) {
+			 int there = adj[here][i].first;
+			 int thereLineNum = adj[here][i].second;
 
-	//-fist는 cost, second.first는 역, second.second는 하이퍼튜브 몇 호선
-	priority_queue<pair<int, pair<int, int> > > pq;
+			 int nextDist = hereDist + (hereLineNum != thereLineNum);
 
-	//-1호선이라는 것은 상징적인 것.
-	pq.push(make_pair(0, make_pair(1, -1)));
-	dist[1] = 0;
+			 if (dist[there] == -1 || dist[there] > nextDist) {
+				 q.push(mp(-nextDist, mp(there, thereLineNum)));
+				 dist[there] = nextDist;
+			 }
+		 }
 
-	while (!pq.empty()) {
+	 }
 
-		int cost = -pq.top().first;
-		int here = pq.top().second.first;
-		int hereLineNum = pq.top().second.second;
-		pq.pop();
+	 cout << dist[N - 1] + 1<< endl;
 
-		if (dist[here] < cost) continue;
-
-		for (int i = 0; i < adj[here].size(); i++) {
-			int there = adj[here][i].first;
-			int thereLineNum = adj[here][i].second;
-			int nextDist = cost + (hereLineNum != thereLineNum);
-
-			if (dist[there] > nextDist) {
-				pq.push(make_pair(-nextDist, make_pair(there, thereLineNum)));
-				dist[there] = nextDist;
-			}
-		}
-	}
-	if (dist[n] >= 0x3f3f0000) {
-		cout << -1 << endl;
-	}
-	else {
-		cout << dist[n] + 1 << endl;
-	}
 	return 0;
 }
