@@ -1,0 +1,4 @@
+﻿  1022.cpp
+c:\users\sangjo\documents\problemsolving\beakjoon\1022\1022\1022.cpp(9): warning C4101: 'a' :참조되지 않은 지역 변수입니다.
+  1022.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\1022\Debug\1022.exe
+  1022.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\1022\Debug\1022.pdb (Partial PDB)
