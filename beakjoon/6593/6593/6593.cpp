@@ -22,7 +22,6 @@ int dy[6] = {1,-1,0,0,0,0};
 int dx[6] = {0,0,1,-1,0,0};
 int main() {
 	freopen("input.txt", "r", stdin);
-	
 	while (cin >> L >> R >> C) {
 		if (L == 0 && R == 0 && C == 0) break;
 		int h, y, x; int endH, endY, endX;
@@ -60,7 +59,6 @@ int main() {
 
 			pq.pop();
 
-			
 			if (cost > dist[hereH][hereY][hereX]) continue;
 
 			for (int i = 0; i < 6; i++) {
@@ -82,7 +80,6 @@ int main() {
 		}
 		else
 			cout << "Escaped in " << ret << " minute(s)." << endl;
-		
 	}
 
 	return 0;
