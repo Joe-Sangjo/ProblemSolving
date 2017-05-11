@@ -1,0 +1,4 @@
+﻿  11724.cpp
+c:\git\problemsolving\beakjoon\11724\11724\11724.cpp(13): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  11724.vcxproj -> C:\Git\ProblemSolving\beakjoon\11724\Debug\11724.exe
+  11724.vcxproj -> C:\Git\ProblemSolving\beakjoon\11724\Debug\11724.pdb (Partial PDB)

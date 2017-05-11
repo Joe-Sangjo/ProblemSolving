@@ -18,6 +18,10 @@ int solve(int index, int isOdd) {
 
 	if (ret != 0xAAAAAAAA) return ret;
 
+	//
+	if (isOdd) {
+
+	}
 
 	for (int next = index + 1; next < n; next++) {
 		int temp = solve(next) + arr[index];
