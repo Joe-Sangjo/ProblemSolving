@@ -1,0 +1,5 @@
+﻿  treasure_SangJoKim.cpp
+c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\핀볼 시뮬레이션\보물섬\tresure\tresure\treasure_sangjokim.cpp(69): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\핀볼 시뮬레이션\보물섬\tresure\tresure\treasure_sangjokim.cpp(98): warning C4244: '인수': 'double'에서 'const int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  TRESURE.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\문제 해결 전략\2회독\15장 계산기하\핀볼 시뮬레이션\보물섬\TRESURE\Debug\TRESURE.exe
+  TRESURE.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\문제 해결 전략\2회독\15장 계산기하\핀볼 시뮬레이션\보물섬\TRESURE\Debug\TRESURE.pdb (Partial PDB)
