@@ -1,0 +1,66 @@
+﻿  NERDS.cpp
+c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\너드인가 너드가 아닌가\nerds2\nerds2\nerds.cpp(86): error C2668: 'std::swap': 오버로드된 함수에 대한 호출이 모호합니다.
+  c:\program files (x86)\microsoft visual studio 14.0\vc\include\exception(324): note: 'void std::swap(std::exception_ptr &,std::exception_ptr &) throw()'일 수 있습니다.
+  c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\너드인가 너드가 아닌가\nerds2\nerds2\nerds.cpp(10): note: 또는       'void swap<vector2>(T,T)'
+          with
+          [
+              T=vector2
+          ]
+  c:\program files (x86)\microsoft visual studio 14.0\vc\include\utility(45): note: 또는       'void std::swap<vector2,void>(_Ty &,_Ty &) noexcept(<expr>)'
+          with
+          [
+              _Ty=vector2
+          ]
+  c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\너드인가 너드가 아닌가\nerds2\nerds2\nerds.cpp(86): note: 인수 목록 '(vector2, vector2)'을(를) 일치시키는 동안
+c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\너드인가 너드가 아닌가\nerds2\nerds2\nerds.cpp(87): error C2668: 'std::swap': 오버로드된 함수에 대한 호출이 모호합니다.
+  c:\program files (x86)\microsoft visual studio 14.0\vc\include\exception(324): note: 'void std::swap(std::exception_ptr &,std::exception_ptr &) throw()'일 수 있습니다.
+  c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\너드인가 너드가 아닌가\nerds2\nerds2\nerds.cpp(10): note: 또는       'void swap<vector2>(T,T)'
+          with
+          [
+              T=vector2
+          ]
+  c:\program files (x86)\microsoft visual studio 14.0\vc\include\utility(45): note: 또는       'void std::swap<vector2,void>(_Ty &,_Ty &) noexcept(<expr>)'
+          with
+          [
+              _Ty=vector2
+          ]
+  c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\너드인가 너드가 아닌가\nerds2\nerds2\nerds.cpp(87): note: 인수 목록 '(vector2, vector2)'을(를) 일치시키는 동안
+c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\너드인가 너드가 아닌가\nerds2\nerds2\nerds.cpp(97): error C2668: 'std::swap': 오버로드된 함수에 대한 호출이 모호합니다.
+  c:\program files (x86)\microsoft visual studio 14.0\vc\include\exception(324): note: 'void std::swap(std::exception_ptr &,std::exception_ptr &) throw()'일 수 있습니다.
+  c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\너드인가 너드가 아닌가\nerds2\nerds2\nerds.cpp(10): note: 또는       'void swap<vector2>(T,T)'
+          with
+          [
+              T=vector2
+          ]
+  c:\program files (x86)\microsoft visual studio 14.0\vc\include\utility(45): note: 또는       'void std::swap<vector2,void>(_Ty &,_Ty &) noexcept(<expr>)'
+          with
+          [
+              _Ty=vector2
+          ]
+  c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\너드인가 너드가 아닌가\nerds2\nerds2\nerds.cpp(97): note: 인수 목록 '(vector2, vector2)'을(를) 일치시키는 동안
+c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\너드인가 너드가 아닌가\nerds2\nerds2\nerds.cpp(114): error C2668: 'std::swap': 오버로드된 함수에 대한 호출이 모호합니다.
+  c:\program files (x86)\microsoft visual studio 14.0\vc\include\exception(324): note: 'void std::swap(std::exception_ptr &,std::exception_ptr &) throw()'일 수 있습니다.
+  c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\너드인가 너드가 아닌가\nerds2\nerds2\nerds.cpp(10): note: 또는       'void swap<vector2>(T,T)'
+          with
+          [
+              T=vector2
+          ]
+  c:\program files (x86)\microsoft visual studio 14.0\vc\include\utility(45): note: 또는       'void std::swap<vector2,void>(_Ty &,_Ty &) noexcept(<expr>)'
+          with
+          [
+              _Ty=vector2
+          ]
+  c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\너드인가 너드가 아닌가\nerds2\nerds2\nerds.cpp(114): note: 인수 목록 '(vector2, vector2)'을(를) 일치시키는 동안
+c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\너드인가 너드가 아닌가\nerds2\nerds2\nerds.cpp(115): error C2668: 'std::swap': 오버로드된 함수에 대한 호출이 모호합니다.
+  c:\program files (x86)\microsoft visual studio 14.0\vc\include\exception(324): note: 'void std::swap(std::exception_ptr &,std::exception_ptr &) throw()'일 수 있습니다.
+  c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\너드인가 너드가 아닌가\nerds2\nerds2\nerds.cpp(10): note: 또는       'void swap<vector2>(T,T)'
+          with
+          [
+              T=vector2
+          ]
+  c:\program files (x86)\microsoft visual studio 14.0\vc\include\utility(45): note: 또는       'void std::swap<vector2,void>(_Ty &,_Ty &) noexcept(<expr>)'
+          with
+          [
+              _Ty=vector2
+          ]
+  c:\users\sangjo\documents\problemsolving\문제 해결 전략\2회독\15장 계산기하\너드인가 너드가 아닌가\nerds2\nerds2\nerds.cpp(115): note: 인수 목록 '(vector2, vector2)'을(를) 일치시키는 동안

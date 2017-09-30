@@ -1,0 +1,6 @@
+﻿  2699.cpp
+c:\users\sangjo\documents\problemsolving\beakjoon\2699\2699\2699.cpp(147): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\sangjo\documents\problemsolving\beakjoon\2699\2699\2699.cpp(156): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\sangjo\documents\problemsolving\beakjoon\2699\2699\2699.cpp(224): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  2699.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\2699\Debug\2699.exe
+  2699.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\2699\Debug\2699.pdb (Partial PDB)

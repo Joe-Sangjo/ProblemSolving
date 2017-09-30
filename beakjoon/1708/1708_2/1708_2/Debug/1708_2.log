@@ -1,0 +1,5 @@
+﻿  1708.cpp
+c:\users\sangjo\documents\problemsolving\beakjoon\1708\1708_2\1708_2\1708.cpp(144): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\sangjo\documents\problemsolving\beakjoon\1708\1708_2\1708_2\1708.cpp(153): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  1708_2.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\1708\1708_2\Debug\1708_2.exe
+  1708_2.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\1708\1708_2\Debug\1708_2.pdb (Partial PDB)

@@ -1,0 +1,5 @@
+﻿  10254.cpp
+c:\users\sangjo\documents\problemsolving\beakjoon\10254\10254\10254.cpp(121): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\sangjo\documents\problemsolving\beakjoon\10254\10254\10254.cpp(130): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  10254.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\10254\Debug\10254.exe
+  10254.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\10254\Debug\10254.pdb (Partial PDB)
