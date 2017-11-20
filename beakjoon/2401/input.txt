@@ -1,0 +1,4 @@
+aabccaab
+2
+aab
+bcc

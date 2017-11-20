@@ -1,0 +1,5 @@
+﻿  2042.cpp
+c:\users\sangjo\documents\problemsolving\beakjoon\2042\2042.cpp(71): warning C4244: '인수': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+c:\users\sangjo\documents\problemsolving\beakjoon\2042\2042.cpp(75): warning C4244: '인수': '__int64'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  2042.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\2042\Debug\2042.exe
+  2042.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\2042\Debug\2042.pdb (Partial PDB)

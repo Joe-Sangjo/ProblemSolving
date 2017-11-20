@@ -1,0 +1,4 @@
+﻿  1693.cpp
+c:\users\sangjo\documents\problemsolving\beakjoon\1693\1693.cpp(20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  1693.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\1693\Debug\1693.exe
+  1693.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\1693\Debug\1693.pdb (Partial PDB)

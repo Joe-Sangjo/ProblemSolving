@@ -1,0 +1,4 @@
+﻿  10845.cpp
+c:\users\sangjo\documents\problemsolving\beakjoon\10845\10845.cpp(36): warning C4715: 'pop': 모든 제어 경로에서 값을 반환하지는 않습니다.
+  10845.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\10845\Debug\10845.exe
+  10845.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\10845\Debug\10845.pdb (Partial PDB)
