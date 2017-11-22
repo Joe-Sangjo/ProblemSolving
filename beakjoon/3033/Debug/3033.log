@@ -1,0 +1,4 @@
+﻿  3033.cpp
+c:\users\sangjo\documents\problemsolving\beakjoon\3033\3033.cpp(96): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  3033.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\3033\Debug\3033.exe
+  3033.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\3033\Debug\3033.pdb (Partial PDB)
