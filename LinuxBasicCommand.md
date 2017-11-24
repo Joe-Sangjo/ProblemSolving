@@ -1,4 +1,3 @@
-<h1>리눅스의 기본 명령어들</h1>
 
 http://www.emh.co.kr/content.pl?linux_basic_commands
 
@@ -35,3 +34,15 @@ Unix의 명령어, 즉 Command는 무척 많고, 이들 하나하나가 많은 �
 
 
 
+<h2>File , Directory 관련</h2>
+
+<h3> cd </h3>
+
+change directory의 약자. 
+
+다른 directory로 이동하고 싶을 때 사용.
+
+
+만약
+
+/usr/local/apache directory로 
