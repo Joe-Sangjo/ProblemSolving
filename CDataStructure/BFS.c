@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+asdfasfasdf
 #define MAX_VERTEX 30
 
 int num;
