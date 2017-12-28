@@ -1,8 +1,9 @@
+#define _CRT_SECURE_NO_WARNINGS
 //----------------------------------------------------------
 //
-// A simple NAND simulator
+// A Simple Page-mapping FTL Simulator
 //
-// Feb. 1, 2017.
+// Feb. 2, 2017
 //
 // Jin-Soo Kim (jinsookim@skku.edu)
 // Computer Systems Laboratory
@@ -11,198 +12,288 @@
 //
 //----------------------------------------------------------
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <queue>
 #include "nand.h"
 
-struct nand_page
+using namespace std;
+
+
+#define SSD_SHIFT	          	32
+#define PAGE_SHIFT	           	12
+#define PAGES_PER_BLOCK_SHIFT	7
+#define OP_RATIO				15
+#define N_RUNS                  10
+
+#define PPN_SHIFT				(SSD_SHIFT - PAGE_SHIFT)
+#define BLOCKS_SHIFT			(PPN_SHIFT - PAGES_PER_BLOCK_SHIFT)
+
+#define N_PAGE_SIZE				(1 << PAGE_SHIFT)
+#define N_PAGES_PER_BLOCK		(1 << PAGES_PER_BLOCK_SHIFT)
+#define N_PPNS					(1 << PPN_SHIFT)
+#define N_BLOCKS				(1 << BLOCKS_SHIFT)
+#define N_USER_BLOCKS           (N_BLOCKS * 100 / (100 + OP_RATIO))
+#define N_OP_BLOCKS				(N_BLOCKS - N_USER_BLOCKS)
+#define N_LPNS					(N_USER_BLOCKS * N_PAGES_PER_BLOCK)
+#define LPN_COUNTS				(N_LPNS * N_RUNS)
+
+#define invalid -1000
+
+struct pm_stat {
+	int gc;
+	long host_write;
+	long gc_write;
+} s;
+
+
+//logical page -> physical page
+int L2PPagemap[N_LPNS + 1];
+
+//physical page -> logical page
+int P2LPagemap[N_PPNS + 1];
+
+//spare block number 단 하나 밖에 없다.
+int spareBlockNumber;
+
+//블락의 invalid한 page의 개수를 저장
+int inValidNumInBlock[N_BLOCKS + 1];
+
+//지금 비어있는 physical page의 번호이다.
+queue<int> emptyPhysicalPageNumber;
+
+
+inline int getBlockNumberByPageNumber(long page){
+	return page / N_PAGES_PER_BLOCK;
+}
+
+inline int getPageOffsetByPageNumber(long page){
+	return page % N_PAGES_PER_BLOCK;
+}
+
+char *bit2cap(int b)
 {
-	u32 	data;
-	u32 	spare;
-	
-};
-	
-struct nand_block{
-	struct nand_page *page;
-	int *isWritten; //1이면 쓰여졌다, 0이면 쓰여지지 않았다.
-};
+	static char *unit[] = { "", "K", "M", "G", "T", "P", "E" };
+	static char buf[32];
 
-struct nand_block *nand_blocks;
+	int u = b / 10;
+	if (u > 6)
+		return "<Too Big>";
+	sprintf(buf, "%d%s", (1 << (b - u * 10)), unit[u]);
+	return buf;
+}
 
-int sizeOfBlock, sizeOfPage;
-int *blockIsWritten;
-
-int nand_init (int nblks, int npages)
+void show_info(void)
 {
-	// initialize the NAND flash memory 
-	// "blks": the total number of flash blocks
-	// "npages": the number of pages per block
-	// returns 0 on success
-	// returns -1 on errors with printing appropriate error message
+	printf("SSD capacity:\t\t%sB\n", bit2cap(SSD_SHIFT));
+	printf("Page size:\t\t%sB\n", bit2cap(PAGE_SHIFT));
+	printf("Pages / Block:\t\t%d pages\n", N_PAGES_PER_BLOCK);
+	printf("Block size:\t\t%sB\n", bit2cap(PAGES_PER_BLOCK_SHIFT + PAGE_SHIFT));
+	printf("OP ratio:\t\t%d%%\n", OP_RATIO);
+	printf("Physical Blocks:\t%s (%d)\n", bit2cap(BLOCKS_SHIFT), N_BLOCKS);
+	printf("User Blocks:\t\t%d\n", N_USER_BLOCKS);
+	printf("OP Blocks:\t\t%d\n", N_OP_BLOCKS);
+	printf("PPNs:\t\t\t%s (%d)\n", bit2cap(PPN_SHIFT), N_PPNS);
+	printf("LPNs:\t\t\t%d\n", N_LPNS);
+	printf("Total runs:\t\tx%d\n", N_RUNS);
+	long long int actualcapacity = N_LPNS;
+	long long int nPageSize = N_PAGE_SIZE;
+	actualcapacity *= nPageSize;
+	printf("Actual capacity:\t%ld Bytes\n\n", actualcapacity);
+}
 
-	nand_blocks = (struct nand_block *)malloc(nblks * sizeof(struct nand_block));
-	blockIsWritten = (int *)malloc(nblks * sizeof(int));
-	for (int i = 0; i < nblks; i++){
-		blockIsWritten[i] = 0;
-	}
+void show_stat(void)
+{
+	printf("\nResults ------\n");
+	printf("Host writes:\t\t%ld\n", s.host_write);
+	printf("GC writes:\t\t%ld\n", s.gc_write);
+	printf("Number of GCs:\t\t%d\n", s.gc);
+	printf("Valid pages per GC:\t%.2f pages\n", (double)s.gc_write / (double)s.gc);
+	printf("WAF:\t\t\t%.2f\n", (double)(s.host_write + s.gc_write) / (double)s.host_write);
+}
 
-	for (int i = 0; i < nblks; i++){
-		nand_blocks[i].page = (struct nand_page *)malloc(npages * sizeof(struct nand_page));
-		nand_blocks[i].isWritten = (int *)malloc(npages * sizeof(int));
-		for (int j = 0; j < npages; j++){
-			nand_blocks[i].isWritten[j] = 0;
+void init(void)
+{
+	s.gc = 0;
+	s.host_write = 0;
+	s.gc_write = 0;
+	srand(0);
+	nand_init(N_BLOCKS, N_PAGES_PER_BLOCK);
+
+	//L2PBlockmap, P2LBlockmap 초기화
+	memset(L2PPagemap, -1, sizeof(L2PPagemap));
+	memset(P2LPagemap, -1, sizeof(P2LPagemap));
+
+	memset(inValidNumInBlock, 0, sizeof(inValidNumInBlock));
+
+	
+	//맨처음 spareBlock의 번호는 마지막 블록이다.
+	spareBlockNumber = N_BLOCKS - 1;
+
+	for (int i = 0; i < (N_BLOCKS - 1) * N_PAGES_PER_BLOCK; i++)
+		emptyPhysicalPageNumber.push(i);
+}
+
+long get_lpn()
+{
+
+	// rand() in MS Visual Studio generates a random number between 0 and 32767.
+	//Random LPNs
+	return (rand() << 15 | rand()) % N_LPNS;
+
+	////Sequence LPNs
+	//static unsigned long x = 0;
+	//return (long)(x++ % N_LPNS);
+}
+
+//spare가 아닌 block에 write를 한다.
+void Nand_Write_First_Time(long lpn){
+
+	//빈 physical block을 얻는다.
+	
+	int candPhysicalPage = emptyPhysicalPageNumber.front();
+	emptyPhysicalPageNumber.pop();
+
+	P2LPagemap[candPhysicalPage] = lpn;
+	L2PPagemap[lpn] = candPhysicalPage;
+	return;
+}
+
+void Nand_Write_Non_First_Time(long lpn){
+	//기존의 것을 invalid로 바꿔주고
+	P2LPagemap[L2PPagemap[lpn]] = invalid;
+
+	//그 블럭내의 invalid page 숫자를 1 올려줌.
+	inValidNumInBlock[L2PPagemap[lpn] / N_PAGES_PER_BLOCK]++;
+	Nand_Write_First_Time(lpn);
+}
+
+//invalid page의 숫자가 가장 많은 physical block의 번호를 반환
+int getMostInvalidPageBlock() {
+
+	int num = -1, ret;
+	for (int i = 0; i < N_BLOCKS; i++) {
+		if (i != spareBlockNumber && num < inValidNumInBlock[i]) {
+			num = inValidNumInBlock[i];
+			ret = i;
 		}
 	}
-	
-	sizeOfBlock = nblks; sizeOfPage = npages;
-
-	printf("NAND %d blocks, %d pages per block, %d pages\n", nblks, npages, nblks * npages);
-	return 0;
-}
-	
-int nand_write (int blk, int page, u32 data, u32 spare)
-{
-	// write "data" and "spare" into the NAND flash memory pointed to by "blk" and "page"
-	// returns 0 on success
-	// returns -1 on errors with printing appropriate error message
-
-	//blk의 범위가 벗어나면,
-	if (blk < 0 || blk >= sizeOfBlock){
-		printf("write(%d, %d) : failed, invalid block number\n", blk, page);
-		return -1;
-	}
-
-	//page의 범위가 벗어나면,
-	if (page < 0 || page >= sizeOfPage){
-		printf("write(%d, %d) : failed, invalid page number\n", blk, page);
-		return -1;
-	}
-
-	//page가 이미 쓰여졌다면,
-	if (nand_blocks[blk].isWritten[page] == 1){
-		printf("write(%d, %d) : failed, the page was already written\n", blk, page);
-		return -1;
-	}
-
-	//순차적으로 쓰여지지 않았다면,
-	if (page > 0 && nand_blocks[blk].isWritten[page - 1] == 0){
-		printf("write(%d, %d) : failed, the page is not being sequentially written\n", blk, page);
-		return -1;
-	}
-	
-
-	blockIsWritten[blk] = 1;
-	nand_blocks[blk].isWritten[page] = 1;
-	nand_blocks[blk].page[page].data = data;
-	nand_blocks[blk].page[page].spare = spare;
-	printf("write(%d, %d): data = 0x%.8x, spare = 0x%.8x\n", blk, page,
-		nand_blocks[blk].page[page].data, nand_blocks[blk].page[page].spare);
-
-
-	return 0;
+	return ret;
 }
 
+//victim block 과 spare block을 바꾼다.
+void changeVictimAndSpare() {
+	int victimBlock = getMostInvalidPageBlock();
 
-int nand_read (int blk, int page, u32 *data, u32 *spare)
-{
-	// read "data" and "spare" from the NAND flash memory pointed to by "blk" and "page"
-	// returns 0 on success
-	// returns -1 on errors with printing appropriate error message
+	//valid한 page의 logical 번호를 가지고 있는다.
+	vector<int> validPage;
 
-	//blk의 범위가 벗어나면,
-	if (blk < 0 || blk >= sizeOfBlock){
-		printf("read(%d, %d) : failed, invalid block number\n", blk, page);
-		return -1;
-	}
-
-	//page의 범위가 벗어나면,
-	if (page < 0 || page >= sizeOfPage){
-		printf("read(%d, %d) : failed, invalid page number\n", blk, page);
-		return -1;
-	}
-
-	//block이 쓰여지지 않았으면
-	if (blockIsWritten[blk] == 0){
-		printf("read(%d, %d) : failed, trying to read an empty block\n", blk, page);
-		return -1;
-	}
-
-	//page가 쓰여지지 않았으면
-	if (nand_blocks[blk].isWritten[page] == 0){
-		printf("read(%d, %d) : failed, trying to read an empty page\n", blk, page);
-		return -1;
-	}
-
-	*data = nand_blocks[blk].page[page].data;
-	*spare = nand_blocks[blk].page[page].spare;
-	printf("read(%d, %d) : data = 0x%.8x, spare = 0x%.8x\n", blk, page, *data, *spare);
-
-	return 0;
-}
-
-int nand_erase (int blk)
-{
-	// erase the NAND flash memory block "blk"
-	// returns 0 on success
-	// returns -1 on errors with printing appropriate error message
-
-	//blk의 범위
-	if (blk < 0 || blk >= sizeOfBlock){
-		printf("erase(%d) : failed, invalied block number\n", blk);
-		return -1;
-	}
-
-	//쓰여지지 않은 블락이면
-	if (blockIsWritten[blk] == 0){
-		printf("erase(%d) : failed trying to erase a free block\n", blk);
-		return -1;
-	}
-
-	for (int i = 0; i < sizeOfPage; i++){
-		nand_blocks[blk].isWritten[i] = 0;
-	}
-
-	blockIsWritten[blk] = 0;
-
-	printf("erase(%d) : block erased\n", blk);
-
-	return 0;
-}
-
-
-int nand_blkdump (int blk)
-{
-	// dump the contents of the NAND flash memory block "blk" (for debugging purpose)
-	// returns 0 on success
-	// returns -1 on errors with printing appropriate error message
-	int numOfwrittenPage;
-
-		numOfwrittenPage = 0;
-		printf("Blk		%d : ", blk);
-		if (blockIsWritten[blk] == 0){
-			printf("FREE\n");
-			return 0;
+	//valid page의 목록을 모은다.
+	for (int i = 0; i < N_PAGES_PER_BLOCK; i++) {
+		if (P2LPagemap[victimBlock + i] != invalid) {
+			validPage.push_back(P2LPagemap[victimBlock + i]);
 		}
 
-		for (int j = 0; j < sizeOfPage; j++){
-			numOfwrittenPage += nand_blocks[blk].isWritten[j];
+	}
+
+	//spareBlock에 valid한 정보를 넣어준다.
+	for (int i = 0; i < validPage.size(); i++) {
+		P2LPagemap[spareBlockNumber + i] = validPage[i];
+		L2PPagemap[validPage[i]] = spareBlockNumber + i;
+		s.gc_write++;
+	}
+
+	//spareBlock의 남는 부분을 emptypage의 목록에 넣어준다.
+	for (int i = validPage.size(); i < N_PAGES_PER_BLOCK; i++) {
+		emptyPhysicalPageNumber.push(i + spareBlockNumber);
+	}
+
+	s.gc++;
+
+	for (int i = 0; i < N_PAGES_PER_BLOCK; i++) {
+		//아무것도 쓰여지지 않았다는 것을 표시해준다.
+		P2LPagemap[victimBlock + i] = -1;
+		
+		//emprtpage의 목록에 넣어준다.
+		emptyPhysicalPageNumber.push(i + victimBlock);
+	}
+
+	//victim block을 spare block으로 바꾸어준다.
+	spareBlockNumber = victimBlock;
+
+}
+
+//L2Ppagemap[lpn]에 기록이 되어있으면 true, 없으면 false
+bool isPageMapTableExist(long lpn){
+	return L2PPagemap[lpn] != -1;
+}
+
+//data block이 다 찼으면 true. 아니면 false
+bool checkDataBlockisFull(){
+	return emptyPhysicalPageNumber.size() == 0;
+}
+
+
+
+//Block 단위로 MapTable 관리
+void write_lpn(long lpn)
+{
+	//1. BlockMapTable에 없는 경우 그냥 data를 써주고 return 한다.
+	if (!isPageMapTableExist(lpn)){
+		if (checkDataBlockisFull()) {
+			//spare block과 victim block을 바꾸어 준다.
+			changeVictimAndSpare();
 		}
-
-		printf("Total %d page(s) written\n", numOfwrittenPage);
-
-		for (int j = 0; j < sizeOfPage; j++){
-			if (nand_blocks[blk].isWritten[j] == 1){
-				printf("	Page	%d: data = 0x%.8x, spare = 0x%.8x\n", j, nand_blocks[blk].page[j].data,
-					nand_blocks[blk].page[j].spare);
-			}
+		Nand_Write_First_Time(lpn);
+		return;
+	}
+	//2. BlockMapTable에 있는 경우. 다른 곳에 data를 써주고 이미 있는 곳에는 invalid 표시를 한다.
+	else{
+		//1. spare block을 바꿔줘야 하는지 check해준다. 
+		//만약 바꿔줘야 한다면 바꾸는 logic을 실행
+		if (checkDataBlockisFull()){
+			//spare block과 victim block을 바꾸어 준다.
+			changeVictimAndSpare();
 		}
+		//2. 지금 다시 write.
+		
+		Nand_Write_Non_First_Time(lpn);
+		return;
+	}
+}
 
 
+void sim()
+{
+	long lpn;
 
+	while (s.host_write < LPN_COUNTS)
+	{
+		lpn = get_lpn();
+		write_lpn(lpn);
+		s.host_write++;
+		//printf("%d %d\n", s.host_write, N_LPNS);
+		if (s.host_write % N_LPNS == 0)
+			printf("[Run %d] host %ld, valid page copy %ld, GC# %d, WAF=%.2f\n",
+			(int)s.host_write / N_LPNS,
+			s.host_write, s.gc_write, s.gc,
+			(double)(s.host_write + s.gc_write) / (double)s.host_write);
+	}
+}
 
-
-
+int main(void)
+{
+	freopen("output.txt", "w", stdout);
+	init();
+	show_info();
+	sim();
+	show_stat();
 	return 0;
 }
+
 
