@@ -22,7 +22,7 @@ int pop() {
 	int here = 0;
 
 	while (true) {
-		
+
 		int left = here * 2 + 1, right = here * 2 + 2;
 
 		int next = here;
@@ -51,7 +51,6 @@ void push(int newValue) {
 
 }
 int main() {
-	
 	freopen("input.txt", "r", stdin);
 	freopen("output.txt", "w", stdout);
 	int n; scanf("%d", &n);

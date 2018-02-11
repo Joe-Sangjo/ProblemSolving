@@ -75,20 +75,12 @@ void getLCP() {
 
 int main() {
 
-	freopen("input.txt", "r", stdin);
-	freopen("output.txt", "w", stdout);
 	cin >> input;
 	N = input.size();
 	SA = vector<int>(N); 
 	LCP = vector<int>(N - 1);
 	
 	getSuffixArray();
-
-	//for (int i = 0; i < SA.size(); i++) {
-	//	for (int j = SA[i]; j < N; j++)
-	//		cout << input[j];
-	//	cout << endl;
-	//}
 
 	for (int i = 0; i < SA.size(); i++) {
 		cout << SA[i] + 1 << " ";

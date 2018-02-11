@@ -1,0 +1,6 @@
+﻿  1202.cpp
+c:\users\sangjo\documents\problemsolving\beakjoon\1202\1202.cpp(59): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\sangjo\documents\problemsolving\beakjoon\1202\1202.cpp(61): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+c:\users\sangjo\documents\problemsolving\beakjoon\1202\1202.cpp(107): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  1202.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\1202\Debug\1202.exe
+  1202.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\1202\Debug\1202.pdb (Partial PDB)

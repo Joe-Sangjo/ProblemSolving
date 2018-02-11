@@ -1,0 +1,5 @@
+﻿  10868.cpp
+c:\users\sangjo\documents\problemsolving\beakjoon\10868\10868.cpp(29): warning C4305: 'return': '__int64'에서 'int'(으)로 잘립니다.
+c:\users\sangjo\documents\problemsolving\beakjoon\10868\10868.cpp(29): warning C4309: 'return': 상수 값이 잘립니다.
+  10868.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\10868\Debug\10868.exe
+  10868.vcxproj -> C:\Users\Sangjo\Documents\ProblemSolving\beakjoon\10868\Debug\10868.pdb (Partial PDB)
