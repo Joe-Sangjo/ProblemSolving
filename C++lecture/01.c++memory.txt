@@ -1,0 +1,253 @@
+/* variable in memory
+    변수들이 선언 될 때마다 stack 처럼 메모리에 쌓임
+    
+    g++나 clang 같은 compiler는 virtual address에서 stack을 쌓을 때는
+    큰 주소에서부터 쌓는다. 0xffffffff 같은 곳에서부터 쌓는다.
+*/
+int main(){
+
+    int a = 0;
+    int b = 3;
+    int c = a + b;
+    return 0;
+}
+
+
+/*
+    sizeof(int) = 4
+    64bit architecture에서는 pointer는 8byte임 꼭 기억!
+    32bit computer에서는 pointer는 4byte.
+
+*/
+
+struct ST{
+    int a; int b;
+};
+
+sizeof(ST); //? -> 8__cpp_binary_literals
+
+struct ST1{
+    long a; //8
+    int b; // 4
+    short c; //2
+};
+
+// -> sizeof(ST1)은 14byte가 아니라 memory allocation 때문에 16byte가 됨.
+
+
+// class 안의 function은 class size와 별로 상관이 없음
+class CAT {
+public :
+    void printCat();
+private :
+    int age; float weight;
+};
+
+// -> sizeof(CAT) -> 8byte
+
+
+// Call Stack
+
+
+int main(){
+
+    int a;
+    double b;
+
+    return 0;
+}
+
+// stack memory는 변수별로 stack이 쌓이는게 아니라 stack frame 단위로 쌓이는 것이고
+// 이 것은 function 단위로 쌓임.
+
+// STACK memory는 함수별로 쌓인다!!
+// 함수를 호출 할 때, parameter, return address를 stack frame에 쌓인다고 생각하면 됨.
+
+
+// C++ 에서 class 내의 member function을 호출하면, return address 뿐만 아니라 this의 정보도 들어감
+// this로 member variable을 control하기 위한 것. 
+// object가 생성될 때에는 class 내의 변수들 만큼 class의 size가 결정되고,
+// 그래서 그 크기만큼 stack에 만들어지고, 그 위로 object의 construct 함수가 호출됨.
+// 이 때 constructor는 함수이므로, return address와 그 안에서 사용하는 변수, 그리고 this의 정보가
+// stack frame으로 한꺼번에 쌓인다
+
+
+
+
+/*
+    Heap Memory..
+    C++ unmanaged Language -> 사용자가 직접 memory를 관리해야하는 프로그래밍.
+    사용자가 메모리 관리를 실패하면 memory leak, memory fragmentation
+    memory fragmentation은 실제로 사용하지 않을 메모리를 할당한  internal fragmentation 문제,
+    다른 곳에서 이미 memory를 할당해서, 내가 사용할 메모리를 할당하지 못하는 external fragmentation 문제가 있음
+    자세한 것은 OS시간에 배운 것을 복습.
+
+
+    Stack memory는
+    Stack frame 단위로 쌓여가고, 컴퓨터는 변수를 찾기 위해서 top위치에서 몇 번 째, 혹은 memory 내의 address를 타고
+    다른 공간으로 가는 식으로 memory를 왔다갔다함.
+    memory를 사용할 때는 위로 쌓고, 다 사용한 경우, 위에서부터 memory를 없애주면 됨
+
+
+    Heap memory에 접근하기 위해서는
+    stack memory에 address가 있고, 이 것을 heap 영역의 memory에 있는 곳을 가리켜서 사용
+
+
+    왜 Heap Memory를 활용해야하는가
+    1. Life Cycle
+        - data를 할당한 stack 영역이 사라지더라도 heap 영역의 pointer만 관리하면 됨
+    2. Large size
+        - stack에는 한계가 있어서 큰 영역의 memory를 할당하기 어려움
+    3. Dynamic allocation
+        - runtime에 따라서 memory를 할당할 크기가 결정됨
+        - stack영역은 compile time에 memory를 어떻게 쓸지가 결정이 됨.
+*/
+
+
+
+
+/*
+    Heap Memory Allocation 스타일
+    1. C style
+        - C style heap int
+            int *ip = (int *)malloc(sizeof(int));
+            *ip = 100;
+            free(ip);
+        - C style heap array
+            int *ip  = (int *)malloc(sizeof(int) * 5);
+            *ip[0] = 100;
+            free(ip);
+        - C 스타일로는 객체를 만들면 안된다!!!!!!!!!!!!!!!!
+
+    2. C++ style
+        - new / delete
+        - Cat *catap = new Cat[5];
+          delete [] catap;
+
+        - 만약 delete를 생략해버리면, 생성해면 heap 영역에서 memory가 leak이 됨.
+
+    3. safer C++ style
+        -  Smart Pointer
+            std::unique_ptr<Cat> catp = std::make_unique<Cat>
+
+            -> delete를 하지 않아도 delete가 알아서 호출 됨!!! 아주 중요
+        
+
+        - array인 경우 vector를 사용하면 자동으로 delete가 호출 됨
+
+            std::vector<Cat> cats(5);
+
+*/
+
+#include <iostream>
+#include <vector>
+
+class Cat{
+public:
+    Cat(){
+        std::cout<<"meow"<<std::endl;
+    };
+    ~Cat() {
+        std::cout<< "bye" << std::endl;
+    };
+private:
+    int mAge;
+};
+
+int main(){
+
+    std::cout<< "How many cats do u need?"<<std::endl;
+    int catCount;
+    std::cin >> catCount;
+
+    std::vector<Cat> cats(catCount);
+
+    return 0;
+}
+
+
+/*
+    Memory Leak이 생기면 OS가 process를 kill 해버림
+    언제 process가 죽을 지 모름...
+
+
+    -> safer c++ sytle로 memory를 관리해야 함 아주 중요!!\
+
+*/
+
+
+
+/*
+    stack 영역의 경우  위쪽에서 촘촘하게 아래 방향으로 만들어지고
+
+    heap 영역의 경우 아래쪽에서 위로 채워짐. 넉넉하게...
+
+
+    언제 stack을 사용하고 언제 heap을 사용해야 할까?
+    
+    1. stack은 stack frame 단위로 alloc/delete되는데, 이 속도가 상당히 빠름
+        엄청나게 큰 memory를 alloc하면 stack의 limit이 넘어갈 수 있는데 이러면 
+        stack overflow가 됨.
+
+    2. heap은 느릴 수 밖에 없음.
+        dynamic allocation이 가능함, 즉 몇개의 array를 만들 것인지를 runtime에서 만들 수 있음.
+        large size는 heap에 alloc하는 것이 정석.
+
+
+    총 용량이 몇 kb 수준이라면 그냥 stack에 alloc
+    즉 배열을 만드는게 나음.
+    std::array<int, 300> a;
+
+
+    엄청나게 많은 것의 배열은 vector를 사용해라!!
+
+
+*/
+
+#include <array>
+#include <vector>
+
+class Cat{
+public:
+private:
+    int m_age;
+};
+
+int main(){
+    Cat cat; // stack
+    std::array<int, 100> catsStack; //(stack)
+    std::array<int, 300> a; //1.2kb (stack)
+    std::vector<int> b(500000); //2mb (heap)
+    std::vector<Cat> cats(100000); //heap
+
+    int count;
+    std::cin>> count;
+
+    std::vector<Cat> dynamicCats(count);
+
+}
+
+// 만약 alloc의 개수가 dynamic하지만, 속도가 빨라야할 경우에는
+// 미리 몇 개를 stack에 할당하고 그 숫자를 넘어서면 false를 반환하는 코드가 좋음
+
+int foo(int num){
+    //const 변수는 초기화를 runtime까지 미룰 수 있는 반면, 즉 const 변수는 변수로 초기화가 가능.
+    //constexpr는 compile 타임에 반드시 초기화가 되어 있어야 함. 오른쪽에 반드시 상수식이 와야함.
+    //보통 템플릿 메타 프로그래밍에 템플릿 안에 들어가는 값에 함수를 넣거나, 비교를 할 때 사용가능
+    //
+    constexpr int maxCats = 1000;
+    if(maxCats < num){
+        return false;
+    }
+
+    std::array<Cat, maxCats> cats;
+}
+int main(){
+    int count;
+    std::cin >> count;
+    foo(count);
+}
+
+
+// memory area중, static(global)이라는 곳이 있음. -> global variable이 자리 잡는 공간
+
