@@ -12,6 +12,8 @@ library도 static library, dynamic library가 있음. head only library도 있�
 
     2. compiler : preprocessor에서 만들어진 translation unit을 object file로 바꿈.
                 object file에는 code, data들이 들어 있음.
+    (정확히는 compiler는 assembly code를 만들어내고 assembler가 assemly code를 object file,
+    즉 machine code로 바꿈. object file = Machine code)
 
     3. linker : compiler에서 만들어진 object file에서 executable 하기 위한 additinal information이 들어감
 
