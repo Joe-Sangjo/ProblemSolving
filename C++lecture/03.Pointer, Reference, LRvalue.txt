@@ -1,0 +1,139 @@
+Pointer & Reference
+
+Parameter로 변수를 넘기는 방법
+    1. Value
+        Parameter의 값이 복사가 됨. 
+        Parameter가 size가 크면 복사가 되어서 시간이 오래걸린다.(아주 중요)
+
+    2. Pointer
+        주소가 복사가 되어서 넘어감. 이 주소를 가리키는 곳을 이용하면 됨.
+    
+    3. Reference
+        Reference로 넘기는 것과 Pointer로 넘기는 것은 똑같음.
+        주소를 넘김.
+
+        -> Pointer를 꼭 써야 하는 경우가 아니면 웬만해서는 Reference를 쓰면 된다.
+        Pointer를 노출하게 되면 버그를 일으킬 확률이 높아짐.
+
+        -> 만약 Parameter로 넘어오는 변수를 바꾸지 않는다면 const를 붙임
+        ex) Fuction(const int &a) -> 이러면 안전한 코드를 짤 수 있음.
+
+
+
+L value Reference(&), R value Reference(&&), std::move(L value에서 R value로 바꾸는 것)
+
+    int a = 0;      a = L value, 0 = R value
+    int b = a;      b = L value, a = L value
+    string s = "abc"    s = L value, abc = R value
+    한 번 부르고 다시 부를 수 있으면 L value
+    한 번만 쓰이고 다시 쓸 수 없으면 R value
+
+    int c = std::move(a);  c = L value, std::move(a) = R value
+    std::move를 통해서 L value가 R value로 바뀜 (temporary 공간이 move()를 통해 만들어짐)
+
+    ex)
+        #include <string>
+
+        void storeByValue(std::string s){
+            std::string b = s;
+        };
+
+        void storeByLRef(std::string & s){
+            std::string b = s;
+        }
+
+        void storeByRRef(std::string && s){
+            std::string b = s; //wrong! s는 R value라서 한 번만 쓰여야 하는데 여기서 쓰일 수 없음
+            
+            -> std::string b = std::move(s) // 이렇게 L value로 바꿔줘야 함
+        }
+
+        int main(){
+
+            std::string a = "abc";
+            storeByValue(a); // "abc"가 2번 복사가 됨. s, b에 넣기 위해 각각 "abc"가 heap에 2개 만들어짐
+            storeByLRef(a); // "abc"가 Parameter S에서는 복사가 안됨. b = s일 때 "abc"가 복사가 됨. 1번 복사
+            storeByRRef(a); // wrong! -> R value로 Parameter를 넘길 수 있는 데 L value 인 a를 넘겨서
+            storeByRRef(std::move(a)) // L value인 a를 R value로 바꿔서(move()를 통해) 가능!
+            storeByRRef("abc") // 가능! "abc"가 R value 이므로
+
+            //storeByRRef(std::move(a)), storeByRRef("abc") // copy가 한 번도 일어나지 않음!
+        }
+
+        -> R value와 move()를 통해서 zero copy가 일어남!. 아주 중요!
+
+
+
+
+std::move()
+
+    std::string a = "nocodeprogram"
+    std::string b = std::move(a);       //여기서 pointer a는 가리키는 것이 없어지고 b가 바로 "nocodeprogram"을 가르키게 됨
+
+
+    std::move()는 L value를 R value로 바꿔줌으로써
+    resource ownership을 다른 object에게 넘겨 줄 수 있음.
+
+    ex1) 
+    void storeByLRef(std::string &s){
+        std::string b = std::move(s); //"abc"에 대한 소유권을 b에게 넘기게 됨
+    }
+
+    int main(){
+        std::string a = "abc";
+        storeByLRef(a);         // 함수 안에서 a는 "abc"에 대한 소유권을 상실
+        std::cout<<a<<std::endl; // 아무 것도 출력이 안됨!
+    }
+
+    ex2) 
+    void storeByLRef(const std::string &s){
+        std::string b = std::move(s); // const가 붙은 &s 때문에 여기서 copy가됨
+                                      // "abc"에 대한 소유권을 a가 잃지 않음!
+    }
+
+    int main(){
+        std::string a = "abc";
+        storeByLRef(a);        
+        std::cout<<a<<std::endl;
+    }
+
+
+    - 함수에 L value가 넘어왔을 때는 1 copy, 
+    R value가 넘어왔을 때는 0 copy가 일어나게 하는 방법
+
+    #include <string>
+    #include <iostream>
+
+    class Cat{
+    public :
+        void setName(std::string Name){
+            mName = std::move(name);
+        };
+    private :
+        std::string mName;
+    };
+
+    int main(){
+        Cat kitty;
+        std::string s = "kitty";
+        kitty.setName(s); // 1 copy  L value에서
+        kitty.setName("Nabi") // 0 copy (copy elision, optimization) R value에서
+    }
+
+
+
+
+Return Value Optimization (R V O)
+
+    std::string getString(){
+        std::string s = "nocodeprogram"
+        return s; // RVO가 개입하여 0 move, 0 copy! 최적화 되어 있음!
+        //return std::move(s); // 할 필요가 없음!
+    }
+
+    int main(){
+        std::string a = getString(); 
+        return 0;
+    }
+
+    굳이 return 을 할 때 std::move()를 할 필요가 없음
