@@ -24,6 +24,7 @@ alias qqqq='cd ../../../..'
 	df = diff
 	ap = apply
 	rs = reset	
+	su = ps --set-upstream
         
         
 
