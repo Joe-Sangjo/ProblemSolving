@@ -25,6 +25,7 @@ alias qqqq='cd ../../../..'
 	ap = apply
 	rs = reset	
 	su = ps --set-upstream
+	cp = cherry-pick
         
         
 
