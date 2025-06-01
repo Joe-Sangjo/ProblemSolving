@@ -1,15 +1,15 @@
 class Solution {
 public:
-    int firstUniqChar(string s) {
-        int ret = -1;
-        if(s.size() == 0) return -1;
-        queue<char> q;
-        q.push(s[0]);
-        for(int i = 1; i < s.size(); i++) {
-            char& prev = s[i-1];
-            char& cur = s[i];
-
-            
+int firstUniqChar(string s) {
+        vector<int>freq(26,0);
+        for(char c:s){
+            freq[c-'a']++;
         }
+        for(int i=0;i<s.size();i++){
+            if(freq[s[i]-'a']==1){
+                return i;
+            }   
+        }
+        return -1;
     }
 };
